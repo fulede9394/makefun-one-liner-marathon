@@ -7,4 +7,11 @@ const LINE =
 
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
+
+// Fail loudly instead of shipping a bad entry: the marathon wants one
+// non-empty line, so a stray newline or an over-long edit should break
+// the run here rather than silently submit something the judge rejects.
+if (!LINE || LINE.includes("\n") || LINE.length > 280) {
+  throw new Error("entry must be a single line of at most 280 characters");
+}
 writeFileSync(join(outDir, "entry.txt"), LINE, "utf8");
